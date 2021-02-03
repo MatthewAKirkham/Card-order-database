@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <style>
+            .wrapper {
+                 width: 1300px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: #fff;
+                box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.3);
+                overflow: hidden;
+            }
+            
+            .display-wrapper {
+                width: 500px;
+                position: absolute;
+                top: 50%;
+                right: 0;
+                background-color: brown;
+                box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.3);
+                overflow: hidden;
+            }
+            
+            .add-order {
+                width: 350px;
+                float: center;
+                left: 50%;
+                height: 340px;
+                padding: 100px;
+                background-color: burlywood;
+            }
+            
+            .search-orders {
+                width: 450px;
+                float: left;
+                left: 50%;
+                padding: 50px;
+                background-color: blue;
+            }
+            
+            .Address {
+                width: 170px;
+                height: 50px;
+                
+            }
+        
+        </style>
+        <meta charset="UTF-8">
+        <title>Faulty Signs order database</title>
+    </head>
+
+    <body>
+        <div class="top">
+            <div class="wrapper">
+                <div class="add-order">
+                    <p>Customer Name:</p>
+                    <input type="text" class="Customer">
+                    <p>Address:</p>
+                    <input type="text" class="Address">
+                    <p>Sold for:</p>
+                    <input type="text" class="sold-for">
+                    <p>Ordered on:</p>
+                    <input type="text" class="order-date">
+                    <p>Price:</p>
+                    <input type="text" class="price">
+                    <p></p>
+                    <button class="submit">Add Order</button>
+                </div>
+                <div class="search-orders">
+                    <p>Enter Customer Name</p>
+                    <input type="text" class="search_by"></input>
+                    <p></p>
+                    <button class="search">Find Order by name</button>
+            
+                </div>
+            </div>
+        </div>
+        <div class="bottom">
+            <div class="display-wrapper" id="display">
+                <!--
+                <p>Customer: </p>
+                <p>Address: </p>
+                <p>Sold for: </p>
+                <p>Ordered on: </p>
+                <p>Price: </p>
+                -->
+            </div>
+        
+        </div>
+
+        
+        
+        <script src="CardOrderData.js"></script>
+    </body>
+</html>
