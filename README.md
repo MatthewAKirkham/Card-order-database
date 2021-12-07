@@ -10,6 +10,8 @@ goals for next commit:
 implement a for loop for the search function so multiple orders with the same name will be displayed
 make use of the finalPrice method and have it replace the price value on the display
 improve the html/css and possibly reduce the number of fields for the customer object
+*UPDATE*
+took forever to find the right place to implement the "finalPrice" method(now called payout) but it's working great!
 
 
 I started working on this project alongside taking a JS course and have been implementing new features and technologies as I learn them.  This will be my first major project done on my own in a while and I'm looking forward to making it even better.
