@@ -7,54 +7,53 @@
 };
 */
 var OrderController = (function() {
-    
-    function Customer(name, address, soldFor, date, price) {
+    // removed soldFor because the data isn't easily available in order slips
+    function Customer(name, address, date, price, payout) {
     this.name = name;
     this.address = address;
-    this.soldFor = soldFor;
     this.date = date;
     this.price = price;
+    this.payout = payout;
 };
+        //TCG fees = 12.75% + .30
+    //adding this functionality later(now)
+    /*function payout(price) {
+        var tempPrice = price;
+        var comFees, proFees;
+        // add shipping fee to orders under $5
+        if (price < 5) {
+            tempPrice = price + .78;
+        }
+        // subtract fees
+        // commision fee is 10.25% and maxes out at $50
+        // processing fee is 2.5% + $.30
+        comFees = price * .1025;
+        if (comFees > 50) {
+            comFees = 50;
+        }
+        // calc processing fees (2.5% + .30)
+        proFees = price * .025 + .30;
+        
+        tempPrice = tempPrice - (comFees + proFees);
+        //subtract shipping
+        //check if shipping number was needed (above 35$)
+        // shipping prices have changed so for simplicities sake I'm using the most recent prices
+        if (price >= 35) {
+            tempPrice -= 4.3;
+        } else {
+            tempPrice -= .60;
+        }
+        return tempPrice;
+    };*/
 
-    //TCG fees = 12.75% + .30
-    //adding this functionality later
-    /*Customer.prototype.finalPrice = function() {
-    var tempPrice = this.price;
-    var comFees, proFees;
-    // add shipping fee to orders under $5
-    if (this.price < 5) {
-        tempPrice = this.price + .78;
-    }
-    // subtract fees
-    // commision fee is 10.25% and maxes out at $50
-    // processing fee is 2.5% + $.30
-    // will have to add this later and calculate the point the $50 limit is reached.  It's 487.88
-    if (this.price >== 487.88) {
-        comFees = 50;
-    } else {
-        comFees = this.price * .1025;
-    }
-    // calc processing fees (2.5% + .30)
-    proFees = this.price * .025 + .30;
-    
-    tempPrice = tempPrice - (comFees + proFees);
-    //subtract shipping
-    //check if shipping number was needed (above 28$)
-    if (this.price >= 28) {
-        tempPrice -= 4.1;
-    } else {
-        tempPrice -= .55;
-    }
-    this.price = tempPrice;
-}*/
     // main array for storing Orders
     var orders = [];
     
     return {
         
-        addItem: function(name, address, soldFor, date, price) {
+        addItem: function(name, address, date, price, payout) {
             // push object onto array
-            orders.push(new Customer(name, address, soldFor, date, price));
+            orders.push(new Customer(name, address, date, price, payout));
             console.log(orders);
         },
         
@@ -69,6 +68,36 @@ var OrderController = (function() {
                 //}
             }
             return results;
+        },
+        //TCG fees = 12.75% + .30
+        //adding this functionality later(now)
+        calcPayout: function(price) {
+            var tempPrice = price;
+            var comFees, proFees;
+            // add shipping fee to orders under $5
+            if (price < 5) {
+                tempPrice = price + .78;
+            }
+            // subtract fees
+            // commision fee is 10.25% and maxes out at $50
+            // processing fee is 2.5% + $.30
+            comFees = price * .1025;
+            if (comFees > 50) {
+                comFees = 50;
+            }
+            // calc processing fees (2.5% + .30)
+            proFees = price * .025 + .30;
+        
+            tempPrice = tempPrice - (comFees + proFees);
+            //subtract shipping
+            //check if shipping number was needed (above 35$)
+            // shipping prices have changed so for simplicities sake I'm using the most recent prices
+            if (price >= 35) {
+                tempPrice -= 4.3;
+            } else {
+                tempPrice -= .60;
+            }
+            return tempPrice;
         }
     }
 })();
@@ -79,9 +108,9 @@ var UIController = (function() {
     var DOMstrings = {
     name: '.Customer',
     address: '.Address',
-    soldFor: '.sold-for',
     orderDate: '.order-date',
     price: '.price',
+    payout: '.payout',
     submit: '.sumbit',
     searchBy: '.search_by',
     search: '.search',
@@ -95,7 +124,6 @@ var UIController = (function() {
             return {
                 name: document.querySelector(DOMstrings.name).value,
                 address: document.querySelector(DOMstrings.address).value,
-                soldFor: document.querySelector(DOMstrings.soldFor).value,
                 orderDate: document.querySelector(DOMstrings.orderDate).value,
                 price: parseFloat(document.querySelector(DOMstrings.price).value),
                 searchBy: document.querySelector(DOMstrings.searchBy).value
@@ -105,7 +133,7 @@ var UIController = (function() {
         clearOrderFields: function() {
             var fields, fieldsArr;
             //get list of the fields
-            fields = document.querySelectorAll(DOMstrings.name + ',' + DOMstrings.address + ',' + DOMstrings.soldFor + ',' + DOMstrings.orderDate + ',' + DOMstrings.price + ',' + DOMstrings.searchBy);
+            fields = document.querySelectorAll(DOMstrings.name + ',' + DOMstrings.address + ',' + DOMstrings.orderDate + ',' + DOMstrings.price + ',' + DOMstrings.searchBy);
             //use slice to convert list to array
             fieldsArr = Array.prototype.slice.call(fields);
         
@@ -129,14 +157,14 @@ var UIController = (function() {
         displayOrder: function(obj) {
             var html, newHtml, element;
             element = DOMstrings.display;
-            html = '<p>Customer: %name%</p><p>Address: %address%</p><p>Sold for: %soldFor%</p><p>Ordered on: %date%</p><p>Price: %price%</p>';
+            html = '<p>Customer: %name%</p><p>Address: %address%</p><p>Ordered on: %date%</p><p>Price: %price%</p><p>Payout: %payout%</p>';
     
             //replace the placeholder text with date from the indexed orders entry
             newHtml = html.replace('%name%', obj.name);
             newHtml = newHtml.replace('%address%', obj.address);
-            newHtml = newHtml.replace('%soldFor%', obj.soldFor);
             newHtml = newHtml.replace('%date%', obj.date);
             newHtml = newHtml.replace('%price%', obj.price);
+            newHtml = newHtml.replace('%payout%', obj.payout);
     
             // insert the new html into the DOM
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
@@ -163,13 +191,15 @@ var Controller = (function(OrderCtrl, UICtrl) {
     };
     
     var ctrlAddItem = function() {
-        var input, newItem;
+        var input, newItem, payout;
         // get the field input data
         input = UICtrl.getInput();
         // check to see that all relavent fields have been filled
         if(input.name !== "" && input.address !== "" && input.soldFor !== "" && input.orderDate !== "" && !isNaN(input.price) && input.price > 0) {
+            //generate payout
+            payout = OrderCtrl.calcPayout(input.price);
             // add the new order to the Order controller
-            newItem = OrderCtrl.addItem(input.name, input.address, input.soldFor, input.orderDate, input.price);
+            newItem = OrderCtrl.addItem(input.name, input.address, input.orderDate, input.price, payout);
         }
         // Clear fields
         UICtrl.clearOrderFields();
